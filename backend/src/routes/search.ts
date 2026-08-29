@@ -8,11 +8,17 @@ searchRoute.get('/search', async (req: Request, res: Response) => {
     const { q } = req.query;
 
     if (!q || typeof q !== 'string') {
-      return res.status(400).json({ error: '検索キーワードが必要です' });
+      return res.status(400).json({ 
+        error: '検索キーワードが必要です',
+        success: false
+      });
     }
 
     if (q.trim().length === 0) {
-      return res.status(400).json({ error: '検索キーワードが空です' });
+      return res.status(400).json({ 
+        error: '検索キーワードが空です',
+        success: false
+      });
     }
 
     const videos = await searchYouTube(q);
@@ -22,6 +28,7 @@ searchRoute.get('/search', async (req: Request, res: Response) => {
     res.status(500).json({
       error: '検索に失敗しました',
       message: error instanceof Error ? error.message : 'Unknown error',
+      success: false
     });
   }
 });
