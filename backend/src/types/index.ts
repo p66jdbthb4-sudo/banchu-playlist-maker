@@ -1,0 +1,23 @@
+export interface Video {
+  id: string;
+  title: string;
+  channelName: string;
+  duration: number; // in seconds
+  videoType: 'banchube' | 'mv' | 'normal' | 'shorts' | 'short';
+  order?: number;
+}
+
+export interface Validation {
+  isValid: boolean;
+  totalDuration: number;
+  banchubeCount: number;
+  errors: Array<{ code: string; message: string }>;
+  warnings?: string[];
+}
+
+export interface Playlist {
+  videos: Video[];
+  mode: 'everyone' | 'premium';
+  validation: Validation;
+  createdAt: string;
+}
