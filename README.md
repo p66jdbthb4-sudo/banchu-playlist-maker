@@ -1,214 +1,220 @@
-# 🎧 B&ZAI YouTube 再生リストメーカー
+# B&ZAI Playlist Maker
 
-YouTube上のB&ZAI関連動画をキーワード検索し、ユーザーが動画を選択すると、指定したルールに従って再生リストの順番を自動で編成できるWebアプリです。
+🎵 YouTube動画から最適なプレイリストを自動編成するツール
 
 ## 📋 プロジェクト概要
 
-### 機能
-- YouTube検索（B&ZAI関連動画）
-- 動画の手動選択
-- 動画の分類（バンチューブ、MV、通常など）
-- ルール基づく自動編成
-- ルール検証
-- URL一覧のコピー出力
+B&ZAI Playlist Makerは、YouTubeの動画を自動分類し、以下の2つのモードでプレイリストを編成します：
 
-### 特徴
-- モバイルファースト UI（スマートフォン・タブレット対応）
-- 初心者向けのシンプルな構成
-- バンチューブ間隔の秒単位での正確な計算
-- 2つのモード（プレミアム用/全員用）
+### モード説明
 
-## 🛠️ 技術スタック
+**全員用モード（Everyone Mode）**
+- MV/音楽動画を最初に配置
+- その後、バンチューブと通常動画を交互に配置
+- 時間がない視聴者向け
 
-### フロントエンド
-- **React 18** + TypeScript
-- **Tailwind CSS** - レスポンシブデザイン
-- **Vite** - ビルドツール
-- **React Context API** - 状態管理
+**プレミアム用モード（Premium Mode）**
+- バンチューブ間にMVと通常動画を挿入
+- より充実した視聴体験を提供
+- ファン向けの長時間視聴に適切
 
-### バックエンド
-- **Node.js** + Express
-- **YouTube Data API v3** - YouTube検索
-- **TypeScript** - 型安全
-- **dotenv** - 環境変数管理
+## ✨ 機能
+
+- 🔍 **動的検索**: YouTube検索APIを使用した動画検索
+- 🤖 **自動分類**: タイトルと時間で動画タイプを自動判定
+  - バンチューブ
+  - MV/音楽
+  - 通常動画
+  - Shorts
+  - 短編（60秒以下）
+- ✅ **自動検証**: ルールに基づいたプレイリスト検証
+  - 合計時間3時間以内
+  - バンチューブ最大6本
+  - バンチューブ間隔5分以上
+- 📥 **エクスポート**: JSON/CSV形式でダウンロード
+
+## 🚀 セットアップ
+
+### 環境要件
+
+- Node.js 18.0 以上
+- npm または yarn
+
+### インストール
+
+```bash
+# リポジトリクローン
+git clone https://github.com/p66jdbthb4-sudo/banchu-playlist-maker.git
+cd banchu-playlist-maker
+
+# バックエンド
+cd backend
+npm install
+cp .env.example .env
+
+# フロントエンド
+cd ../frontend
+npm install
+```
+
+## 🏃 実行方法
+
+### 開発環境での起動
+
+**ターミナル1: バックエンド**
+```bash
+cd backend
+npm run dev
+# http://localhost:5000 で起動
+```
+
+**ターミナル2: フロントエンド**
+```bash
+cd frontend
+npm run dev
+# http://localhost:5173 で起動
+```
+
+### 本番環境でのビルド
+
+```bash
+# バックエンド
+cd backend
+npm run build
+npm start
+
+# フロントエンド
+cd frontend
+npm run build
+npm run preview
+```
 
 ## 📁 プロジェクト構成
 
 ```
 banchu-playlist-maker/
-├── frontend/                    # React アプリ
+├── backend/
 │   ├── src/
-│   │   ├── components/         # React コンポーネント
-│   │   ├── types/              # TypeScript 型定義
-│   │   ├── utils/              # ユーティリティ関数
-│   │   ├── context/            # Context API
-│   │   ├── App.tsx
-│   │   └── main.tsx
+│   │   ├── server.ts          # Express サーバー
+│   │   ├── routes/
+│   │   │   ├── search.ts      # YouTube検索エンドポイント
+│   │   │   └── organize.ts    # プレイリスト編成エンドポイント
+│   │   ├── utils/
+│   │   │   ├── youtube.ts     # YouTube検索処理
+│   │   │   ├── detector.ts    # 動画タイプ判定ロジック
+│   │   │   └── organizer.ts   # プレイリスト編成ロジック
+│   │   └── types/
+│   │       └── index.ts       # TypeScript型定義
 │   ├── package.json
-│   └── vite.config.ts
+│   ├── tsconfig.json
+│   └── .env.example
 │
-├── backend/                     # Express サーバー
-│   ├── src/
-│   │   ├── routes/             # API ルート
-│   │   ├── services/           # ビジネスロジック
-│   │   ├── types/              # TypeScript 型定義
-│   │   ├── utils/              # ユーティリティ関数
-│   │   └── app.ts
-│   ├── .env.example            # 環境変数テンプレート
-│   ├── package.json
-│   └── tsconfig.json
-│
-└── README.md                    # このファイル
+└── frontend/
+    ├── src/
+    │   ├── main.tsx           # エントリーポイント
+    │   ├── App.tsx            # メインアプリケーション
+    │   ├── components/
+    │   │   ├── SearchForm.tsx      # 検索フォーム
+    │   │   ├── VideoList.tsx       # 動画リスト
+    │   │   └── PlaylistViewer.tsx  # プレイリスト表示
+    │   ├── api/
+    │   │   └── client.ts      # API クライアント
+    │   ├── types/
+    │   │   └── index.ts       # TypeScript型定義
+    │   └── index.css          # Tailwind CSS
+    ├── index.html
+    ├── vite.config.ts
+    ├── tsconfig.json
+    ├── tailwind.config.js
+    ├── postcss.config.js
+    ├── package.json
+    └── .gitignore
 ```
 
-## 🚀 セットアップ手順
+## 🔌 API エンドポイント
 
-### 前提条件
-- Node.js v18以上
-- npm v9以上
-- YouTube Data API キー（Google Cloud Console から取得）
+### 検索
 
-### インストール
-
-#### 1. リポジトリをクローン
 ```bash
-git clone https://github.com/p66jdbthb4-sudo/banchu-playlist-maker.git
-cd banchu-playlist-maker
+GET /api/search?q=keyword
 ```
 
-#### 2. フロントエンドセットアップ
+**レスポンス例**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "video_id",
+      "title": "動画タイトル",
+      "channelName": "チャンネル名",
+      "duration": 300,
+      "videoType": "normal"
+    }
+  ]
+}
+```
+
+### プレイリスト編成
+
 ```bash
-cd frontend
-npm install
-npm run dev
-# http://localhost:5173 でアクセス可能
+POST /api/organize
+Content-Type: application/json
+
+{
+  "videos": [...],
+  "mode": "everyone"
+}
 ```
 
-#### 3. バックエンドセットアップ
-```bash
-cd ../backend
-npm install
-
-# .env ファイルを作成
-cp .env.example .env
-
-# .env に YouTube API キーを設定
-# YOUTUBE_API_KEY=AIzaSy...
-
-npm run dev
-# http://localhost:5000 で起動
+**レスポンス例**
+```json
+{
+  "success": true,
+  "data": {
+    "videos": [...],
+    "mode": "everyone",
+    "validation": {
+      "isValid": true,
+      "totalDuration": 7200,
+      "banchubeCount": 3,
+      "errors": [],
+      "warnings": []
+    },
+    "createdAt": "2024-01-01T00:00:00.000Z"
+  }
+}
 ```
 
-## 📱 使い方
+## 🎯 検証ルール
 
-1. **モード選択** - 「プレミアム用」または「全員用」を選択
-2. **YouTube検索** - "バンチューブ"などのキーワードで検索
-3. **動画選択** - 検索結果から「追加」ボタンで動画を選択
-4. **動画分類** - 各動画の「動画タイプ」を設定（バンチューブ、MV など）
-5. **自動編成** - 「✨ ルールに沿って自動編成」ボタンをクリック
-6. **ルール検証** - 完成リストのルール違反をチェック
-7. **URL出力** - 動画URLをコピー
+| ルール | 説明 | 制限値 |
+|--------|------|--------|
+| 合計時間 | プレイリスト全体の再生時間 | 最大3時間 |
+| バンチューブ数 | バンチューブ動画の本数 | 最大6本 |
+| バンチューブ間隔 | バンチューブ同士の間隔 | 最小5分 |
 
-## 📋 ルール仕様
-
-### プレミアム用ルール
-- 1つの再生リストは **3時間以内**
-- バンチューブは **最大6本**
-- バンチューブ間は、間にある動画の合計時間が **305秒以上**
-- MV / ♪動画をバンチューブ間に配置してもよい
-- 最初と最後には短めの動画を優先
-- Shortsは対象外
-
-### 全員用ルール
-- 1つの再生リストは **3時間以内**
-- バンチューブは **最大6本**
-- バンチューブ間は、間にある動画の合計時間が **305秒以上**
-- MV / ♪動画は基本的に最初に配置
-- バンチューブ間にはMV / ♪動画を配置しない
-- 最初と最後には短めの動画を優先
-- Shortsは対象外
-
-### 📌 間隔の定義
-「バンチューブ間隔 305秒以上」の意味：
-
-```
-バンチューブ
-↓
-2:10の動画 (130秒)
-↓
-1:47の動画 (107秒)
-↓
-1:18の動画 (78秒)
-↓
-バンチューブ
-
-合計: 130 + 107 + 78 = 315秒 ✅ OK （305秒以上）
-```
-
-## 🔐 環境変数
-
-### バックエンド（.env）
-```bash
-# YouTube API キー（必須）
-YOUTUBE_API_KEY=AIzaSy...
-
-# サーバー設定
-BACKEND_PORT=5000
-
-# フロントエンドURL
-FRONTEND_URL=http://localhost:3000
-```
-
-**⚠️ 重要**: `.env` ファイルは `.gitignore` に追加してください。APIキーは絶対に共有しないでください。
-
-## 📚 開発コマンド
-
-### フロントエンド
-```bash
-cd frontend
-
-# 開発サーバー起動
-npm run dev
-
-# ビルド
-npm run build
-
-# プレビュー
-npm run preview
-```
+## 🛠️ 技術スタック
 
 ### バックエンド
-```bash
-cd backend
+- Node.js + Express
+- TypeScript
+- youtube-sr（YouTube検索ライブラリ）
 
-# 開発サーバー起動（自動リロード）
-npm run dev
+### フロントエンド
+- React 18
+- TypeScript
+- Vite
+- Tailwind CSS
 
-# ビルド
-npm run build
-
-# 本番環境で実行
-npm run start
-```
-
-## 🎯 実装フェーズ
-
-- [x] **Phase 1** - プロジェクト初期化
-- [x] **Phase 2** - UI構築（フロントエンド）
-- [x] **Phase 3** - バックエンド基本設定
-- [x] **Phase 4** - API連携（YouTube検索）
-- [x] **Phase 5** - 自動編成アルゴリズム
-- [x] **Phase 6** - ルール検証 + 完成
-
-## 📞 サポート
-
-問題が発生した場合は、GitHubのIssueを作成してください。
-
-## 📄 ライセンス
+## 📝 ライセンス
 
 MIT License
 
----
+## 👤 作成者
 
-**作成日**: 2026年8月29日
-**バージョン**: 0.1.0（初期実装）
+p66jdbthb4-sudo
+
+## 📧 お問い合わせ
+
+バグ報告や機能リクエストは、GitHubのIssuesで報告してください。

@@ -1,0 +1,23 @@
+{
+  "name": "banchu-playlist-maker",
+  "version": "1.0.0",
+  "description": "YouTube動画から最適なプレイリストを自動編成するツール",
+  "scripts": {
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "build": "npm run build:backend && npm run build:frontend",
+    "start:backend": "cd backend && npm start",
+    "start:frontend": "cd frontend && npm run preview"
+  },
+  "keywords": [
+    "youtube",
+    "playlist",
+    "automation",
+    "react",
+    "nodejs"
+  ],
+  "author": "p66jdbthb4-sudo",
+  "license": "MIT"
+}
